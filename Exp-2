@@ -1,0 +1,84 @@
+N-Queens in Prolog
+
+Experiment_no_1_to_5_Ai[1]
+
+range(From, To, []) :- From > To, !.
+range(From, To, [From|Rest]) :-
+    From =< To,
+    Next is From + 1,
+    range(Next, To, Rest).
+
+n_queens(N, Solution) :-
+    range(1, N, Ns),
+    permutation(Ns, Solution),
+    safe(Solution).
+
+safe([]).
+safe([Queen|Others]) :-
+    safe(Others),
+    no_attack(Queen, Others, 1).
+
+no_attack(_, [], _).
+no_attack(Y, [Y1|Ylist], Xdist) :-
+    Y =\= Y1 + Xdist,
+    Y =\= Y1 - Xdist,
+    Dist1 is Xdist + 1,
+    no_attack(Y, Ylist, Dist1).
+
+:- initialization(main).
+main :-
+    N = 4,
+    findall(S, n_queens(N, S), Sols),
+    write('Solutions: '), nl,
+    print_solutions(Sols),
+    halt.
+
+print_solutions([]).
+print_solutions([H|T]) :-
+    write(H), nl,
+    print_solutions(T).
+
+INPUT:
+
+(NONE — N=4 is hardcoded)
+
+2. N-Queens in Python
+
+Experiment_no_1_to_5_Ai[1]
+
+def is_safe(board, row, col, n):
+    for i in range(row):
+        if board[i] == col:
+            return False
+    for i in range(row):
+        if abs(board[i] - col) == abs(i - row):
+            return False
+    return True
+
+def solve_n_queens(board, row, n, solutions):
+    if row == n:
+        solutions.append(board[:])
+        return
+    for col in range(n):
+        if is_safe(board, row, col, n):
+            board[row] = col
+            solve_n_queens(board, row + 1, n, solutions)
+
+def print_solutions(solutions, n):
+    for sol in solutions:
+        for i in range(n):
+            row = ["."] * n
+            row[sol[i]] = "Q"
+            print(" ".join(row))
+        print()
+
+def n_queens(n):
+    board = [-1] * n
+    solutions = []
+    solve_n_queens(board, 0, n, solutions)
+    print(f"Total solutions for {n}x{n} board: {len(solutions)}\n")
+    print_solutions(solutions, n)
+
+if __name__ == "__main__":
+    n = int(input("Enter value of N: "))
+    n_queens(n)
