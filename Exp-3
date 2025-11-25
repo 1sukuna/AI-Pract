@@ -1,0 +1,83 @@
+EXPERIMENT 3 – DFS
+1. DFS in Prolog
+
+Experiment_no_1_to_5_Ai[1]
+
+edge(a, b).
+edge(a, c).
+edge(b, d).
+edge(b, e).
+edge(c, f).
+edge(e, f).
+edge(d, g).
+edge(f, g).
+
+dfs(Start, Goal, Path) :-
+    dfs_helper(Start, Goal, [Start], Path).
+
+dfs_helper(Goal, Goal, Visited, Path) :-
+    reverse(Visited, Path).
+
+dfs_helper(Current, Goal, Visited, Path) :-
+    edge(Current, Next),
+    \+ member(Next, Visited),
+    dfs_helper(Next, Goal, [Next|Visited], Path).
+
+:- initialization(main).
+main :-
+    Start = a,
+    Goal = g,
+    write('DFS Paths from '), write(Start), write(' to '), write(Goal), write(':'), nl,
+    dfs(Start, Goal, Path),
+    write(Path), nl,
+    fail.
+main :- halt.
+
+INPUT:
+
+(NONE — start & goal hardcoded)
+
+2. DFS in Python
+
+Experiment_no_1_to_5_Ai[1]
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': ['G'],
+    'E': ['F'],
+    'F': ['G'],
+    'G': []
+}
+
+def dfs(graph, start, goal, path=None, visited=None):
+    if visited is None:
+        visited = set()
+    if path is None:
+        path = []
+    path.append(start)
+    visited.add(start)
+
+    if start == goal:
+        return [path.copy()]
+
+    all_paths = []
+    for neighbor in graph[start]:
+        if neighbor not in visited:
+            found_paths = dfs(graph, neighbor, goal, path, visited)
+            all_paths.extend(found_paths)
+
+    path.pop()
+    visited.remove(start)
+    return all_paths
+
+if __name__ == "__main__":
+    start_node = 'A'
+    goal_node = 'G'
+    paths = dfs(graph, start_node, goal_node)
+    print(f"DFS Paths from {start_node} to {goal_node}:")
+    for p in paths:
+        print(p)
+
+INPUT:
