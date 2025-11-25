@@ -1,0 +1,69 @@
+Breadth-First Search in Prolog
+
+Experiment_no_1_to_5_Ai[1]
+
+edge(a,b). edge(a,c). edge(b,d). edge(b,e).
+edge(c,f). edge(d,g). edge(e,f). edge(f,g).
+
+breadth_first(Start, Goal, Path) :-
+    bfs([[Start]], Goal, Path).
+
+bfs([[Goal|Rest]|_], Goal, Path) :-
+    reverse([Goal|Rest], Path).
+
+bfs([CurrentPath|OtherPaths], Goal, Path) :-
+    CurrentPath = [CurrentNode|_],
+    findall([Next,CurrentNode|CurrentPath],
+        (edge(CurrentNode, Next), \+ member(Next, CurrentPath)),
+        NewPaths),
+    append(OtherPaths, NewPaths, UpdatedQueue),
+    bfs(UpdatedQueue, Goal, Path).
+
+:- initialization(main).
+main :-
+    Start = a,
+    Goal = g,
+    (breadth_first(Start, Goal, Path) ->
+        write('Breadth-First Search Path: '), write(Path), nl ;
+        write('No path found.'), nl),
+    halt.
+
+INPUT:
+
+(NONE)
+
+2. BFS in Python
+
+Experiment_no_1_to_5_Ai[1]
+
+from collections import deque
+
+graph = {
+    'A': ['B', 'C'],
+    'B': ['D', 'E'],
+    'C': ['F'],
+    'D': ['G'],
+    'E': ['F'],
+    'F': ['G'],
+    'G': []
+}
+
+def breadth_first_search(graph, start, goal):
+    queue = deque()
+    queue.append([start])
+    while queue:
+        path = queue.popleft()
+        node = path[-1]
+        if node == goal:
+            return path
+        for neighbor in graph[node]:
+            if neighbor not in path:
+                new_path = path + [neighbor]
+                queue.append(new_path)
+    return None
+
+if __name__ == "__main__":
+    start_node = 'A'
+    goal_node = 'G'
+    path = breadth_first_search(graph, start_node, goal_node)
+    print(path)
